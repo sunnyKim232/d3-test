@@ -2,15 +2,17 @@ import "./App.css";
 import * as d3 from "d3";
 import DynamicChart from "./components/DynamicChart";
 import SmileFace from "./components/SmileFace";
-import ColorChart from "./components/ColorChart";
+import CurvedChart from "./components/CurvedChart";
+import BarChart from "./components/BarChart";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div style={{ padding: "20px" }}>
+      <header>
         {/* <DynamicChart /> */}
         {/* <SmileFace /> */}
-        <ColorChart />
+        {/* <CurvedChart /> */}
+        <BarChart />
       </header>
     </div>
   );
