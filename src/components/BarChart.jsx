@@ -20,20 +20,12 @@ function BarChart() {
       .range([0, 300])
       .padding(0.5);
 
-    const yScale = scaleBand().domain([0, 150]).range([150, 0]);
-    const myLine = line()
-      .x((value, index) => xScale(index))
-      .y(yScale)
-      .curve(curveCardinal);
+    const yScale = scaleLinear().domain([0, 150]).range([150, 0]);
 
-    // svg
-    //   .selectAll("circle")
-    //   .data(data)
-    //   .join("circle")
-    //   .attr("r", (value) => value)
-    //   .attr("cx", (value) => value)
-    //   .attr("cy", (value) => value)
-    //   .attr("stroke", "red");
+    const colorScale = scaleLinear()
+      .domain([75, 100, 150])
+      .range(["green", "orange", "red"])
+      .clamp(true);
 
     const xAxis = axisBottom(xScale).ticks(data.length);
     const yAxis = axisRight(yScale);
@@ -46,10 +38,29 @@ function BarChart() {
       .data(data)
       .join("rect")
       .attr("class", "bar")
+      .style("transform", "scale(1, -1")
       .attr("x", (value, index) => xScale(index))
-      .attr("y", yScale)
+      .attr("y", -150)
       .attr("width", xScale.bandwidth())
-      .attr("height", 50);
+      .on("mouseenter", (event, d) => {
+        const index = svg.selectAll(".bar").nodes().indexOf(event.target);
+        svg
+          .selectAll(".tooltip")
+          .data([d])
+          .join((enter) => enter.append("text").attr("y", yScale(d) - 5))
+          // .join("text")
+          .attr("class", "tooltip")
+          .text(d)
+          .attr("x", xScale(index) + xScale.bandwidth() / 2)
+          .attr("text-anchor", "middle")
+          .transition()
+          .attr("y", yScale(d) - 10)
+          .attr("opacity", 1);
+      })
+      .on("mouseleave", () => svg.select(".tooltip").remove())
+      .transition()
+      .attr("fill", colorScale)
+      .attr("height", (value) => 150 - yScale(value));
   }, [data]);
   return (
     <>
@@ -70,6 +81,7 @@ function BarChart() {
       <button onClick={() => setData(data.map((value) => value < 35))}>
         Filter data
       </button>
+      <button>Add data</button>
     </>
   );
 }
